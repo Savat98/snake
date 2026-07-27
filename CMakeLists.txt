@@ -23,6 +23,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(snake
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        snakepart.h snakepart.cpp
+        snake.h snake.cpp
+        fruit.h fruit.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET snake APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
