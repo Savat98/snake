@@ -1,19 +1,18 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 #include"snakepart.h"
-#include<QVector>
+#include<deque>
 
 class Snake
 {
 public:
     Snake();
 
-    const QVector<SnakePart*>& getSnake();
+    const std::deque<SnakePart*>& getSnake();
 
     int getSize() const;
 
-    void moveAlong(int prevX, int prevY);
-    void addTail(int tailX,int tailY);
+    void addTail(const QPoint &point);
 
     void moveUp();
     void moveDown();
@@ -25,8 +24,11 @@ public:
     void eatUp();
     void eatDown();
 
+    bool ateItself() const;
+
 private:
-    QVector<SnakePart*> snake;
+    std::deque<SnakePart*> snake;
 };
+
 
 #endif // SNAKE_H

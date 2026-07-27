@@ -1,116 +1,100 @@
 #include "snake.h"
+#include<unordered_set>
 
+
+// 10 zameni sa mapsize
 Snake::Snake(){
     for(int i=0; i<3; i++){
         SnakePart* part = new SnakePart(10/2, 10/2 + i);
-        snake.append(part);
+        snake.push_back(part);
     }
 }
 
-const QVector<SnakePart *> &Snake::getSnake() {
+const std::deque<SnakePart *> &Snake::getSnake() {
     return snake;
 }
 
 int Snake::getSize() const{
-    return snake.length();
+    return snake.size();
 }
 
-void Snake::moveAlong(int prevX, int prevY){
-    int n = getSize();
-    for(int i=1; i < n; i++){
-        int xTmp = snake[i]->getX();
-        int yTmp = snake[i]->getY();
-        snake[i]->setCoordinates(prevX, prevY);
-        prevX = xTmp;
-        prevY = yTmp;
-    }
-}
-
-void Snake::addTail(int tailX, int tailY){
-    SnakePart* part = new SnakePart(tailX, tailY);
-    snake.append(part);
+void Snake::addTail(const QPoint& point){
+    SnakePart* part = new SnakePart(point);
+    snake.push_back(part);
 }
 
 void Snake::moveUp() {
-    int prevX = snake[0]->getX();
-    int prevY = snake[0]->getY();
-
-    snake[0]->setCoordinates(snake[0]->getX() - 1, snake[0]->getY());
-
-    moveAlong(prevX, prevY);
+    QPoint headPoint = snake.front()->getCoordinates();
+    SnakePart *part = new SnakePart(headPoint.x() - 1, headPoint.y());
+    snake.push_front(part);
+    snake.pop_back();
 }
 
 void Snake::moveDown()
 {
-    int prevX = snake[0]->getX();
-    int prevY = snake[0]->getY();
-
-    snake[0]->setCoordinates(snake[0]->getX() + 1, snake[0]->getY());
-
-    moveAlong(prevX, prevY);
+    QPoint headPoint = snake.front()->getCoordinates();
+    SnakePart *part = new SnakePart(headPoint.x() + 1, headPoint.y());
+    snake.push_front(part);
+    snake.pop_back();
 }
 
 void Snake::moveLeft()
 {
-    int prevX = snake[0]->getX();
-    int prevY = snake[0]->getY();
-
-    snake[0]->setCoordinates(snake[0]->getX(), snake[0]->getY() - 1);
-
-    moveAlong(prevX, prevY);
+    QPoint headPoint = snake.front()->getCoordinates();
+    SnakePart *part = new SnakePart(headPoint.x(), headPoint.y() - 1);
+    snake.push_front(part);
+    snake.pop_back();
 }
 
 void Snake::moveRight()
 {
-    int prevX = snake[0]->getX();
-    int prevY = snake[0]->getY();
-
-    snake[0]->setCoordinates(snake[0]->getX(), snake[0]->getY() + 1);
-
-    moveAlong(prevX, prevY);
+    QPoint headPoint = snake.front()->getCoordinates();
+    SnakePart *part = new SnakePart(headPoint.x(), headPoint.y() + 1);
+    snake.push_front(part);
+    snake.pop_back();
 }
 
 void Snake::eatRight(){
-    int size = getSize();
-    int tailX = snake[size - 1]->getX();
-    int tailY = snake[size - 1]->getY();
 
-    moveRight();
-    addTail(tailX, tailY);
-
+    QPoint headPoint = snake.front()->getCoordinates();
+    snake.push_front(new SnakePart(headPoint.x(), headPoint.y() + 1));
 }
 
 void Snake::eatLeft()
 {
-    int size = getSize();
-    int tailX = snake[size - 1]->getX();
-    int tailY = snake[size - 1]->getY();
-
-    moveLeft();
-    addTail(tailX, tailY);
+    QPoint headPoint = snake.front()->getCoordinates();
+    snake.push_front(new SnakePart(headPoint.x(), headPoint.y() - 1));
 
 }
 
 void Snake::eatUp()
 {
-    int size = getSize();
-    int tailX = snake[size - 1]->getX();
-    int tailY = snake[size - 1]->getY();
-
-    moveUp();
-    addTail(tailX, tailY);
+    QPoint headPoint = snake.front()->getCoordinates();
+    snake.push_front(new SnakePart(headPoint.x() - 1, headPoint.y()));
 
 }
 
 void Snake::eatDown()
 {
-    int size = getSize();
-    int tailX = snake[size - 1]->getX();
-    int tailY = snake[size - 1]->getY();
+    QPoint headPoint = snake.front()->getCoordinates();
+    snake.push_front(new SnakePart(headPoint.x() + 1, headPoint.y()));
 
-    moveDown();
-    addTail(tailX, tailY);
+}
 
+// 10 zameni sa mapsize
+struct QPointHash{
+    int operator() (const QPoint &p1) const{
+        return p1.x() * 10 + p1.y();
+    }
+};
+
+bool Snake::ateItself() const{
+    std::unordered_set<QPoint, QPointHash> coordinates;
+    for(auto *part : snake)
+        coordinates.insert(part->getCoordinates());
+
+
+    return getSize() != coordinates.size();
 }
 
 

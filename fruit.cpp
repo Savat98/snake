@@ -4,6 +4,7 @@ Fruit::Fruit() {
     spawn();
 }
 
+// 10 zameni  sa mapsize
 void Fruit::spawn() {
     x =QRandomGenerator::global()->bounded(0, 10);
     y =QRandomGenerator::global()->bounded(0, 10);
