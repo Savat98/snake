@@ -6,7 +6,8 @@
 class Snake
 {
 public:
-    Snake();
+    Snake(int screenSize);
+    ~Snake();
 
     const std::deque<SnakePart*>& getSnake();
 
@@ -19,15 +20,15 @@ public:
     void moveLeft();
     void moveRight();
 
-    void eatRight();
-    void eatLeft();
-    void eatUp();
-    void eatDown();
+    SnakePart* getHead() const;
+    SnakePart* getTail() const;
 
     bool ateItself() const;
 
 private:
+
     std::deque<SnakePart*> snake;
+    int screenSize;
 };
 
 

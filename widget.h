@@ -4,7 +4,12 @@
 #include <QWidget>
 #include"snake.h"
 #include"fruit.h"
+#include<QGraphicsScene>
 #include<iostream>
+#include<QVector>
+#include"snakebodyitem.h"
+#include"fruititem.h"
+#include<QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,45 +25,45 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+    void onUpArrow();
+    void keyPressEvent(QKeyEvent *event) override;
+private slots:
+    void exit();
+    void restart();
+    void clearMemory();
+    void move();
+
 private:
+    enum class Dirrection{
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    };
+    bool fruitSpawnedOnSnake() const;
+    bool hitWall() const;
+    void initGame();
+    void gameOver();
+    void updateSnake();
+    void moveUp();
+    void moveDown();
+    void moveLeft();
+    void moveRight();
 
-    void print() const{
-        //auto vektor = snake->getSnake();
-        for(int i=0; i<12; i++){
-            for(int j=0; j<12; j++){
-                if(i == 0 | j == 0 || i == 11 | j == 11){
-                    std::cout<<"*";
-                }
-                else{
+    void respawnFruit();
+    void addTail(QPoint p);
 
 
-
-                    bool upisan = false;
-
-                    if(fruit != nullptr){
-                        if(fruit->getX() == i && fruit->getY() == j){
-                            upisan = true;
-                            std::cout<<"x";
-                        }
-                    }
-
-                    for(SnakePart* part : snake->getSnake()){
-                        if(part->getX() == i && part->getY() == j){
-                            upisan = true;
-                            std::cout<<"o";
-                        }
-                    }
-                    if(!upisan)
-                        std::cout<<" ";
-                }
-            }
-            std::cout<<std::endl;
-        }
-
-    }
-
+    int gameSpeed = 8;
+    Dirrection direction = Dirrection::LEFT;
+    int screenSize = 500;
+    FruitItem *fruitItem;
+    QVector<SnakeBodyItem*> bodyItems;
+    QGraphicsScene *scene;
+    QGraphicsView *view;
     Fruit *fruit;
     Snake* snake;
+    QTimer *timer;
     Ui::Widget *ui;
 };
 #endif // WIDGET_H

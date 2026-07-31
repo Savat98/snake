@@ -5,8 +5,7 @@
 class Fruit
 {
 public:
-    Fruit();
-    Fruit(int x, int y) : x(x), y(y) {}
+    Fruit(int screenSize);
 
     void spawn();
 
@@ -17,6 +16,7 @@ public:
     int getY() const;
 
 private:
+    int screenSize;
     int x;
     int y;
 };

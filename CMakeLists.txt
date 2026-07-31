@@ -26,6 +26,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         snakepart.h snakepart.cpp
         snake.h snake.cpp
         fruit.h fruit.cpp
+        snakebodyitem.h snakebodyitem.cpp
+        fruititem.h fruititem.cpp
 
     )
 # Define target properties for Android with Qt 6 as:

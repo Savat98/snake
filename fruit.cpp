@@ -1,13 +1,17 @@
 #include "fruit.h"
+#include<QDebug>
 
-Fruit::Fruit() {
+Fruit::Fruit(int screenSize) : screenSize(screenSize){
     spawn();
 }
 
-// 10 zameni  sa mapsize
+
 void Fruit::spawn() {
-    x =QRandomGenerator::global()->bounded(0, 10);
-    y =QRandomGenerator::global()->bounded(0, 10);
+    x =QRandomGenerator::global()->bounded(0, 20) * screenSize / 20 ;
+    y =QRandomGenerator::global()->bounded(0, 20) * screenSize / 20;
+    if(x > 500 || y > 500||x < 0 || y < 0){
+        qDebug()<<"spawn bug";
+    }
 }
 
 void Fruit::respawn() {
