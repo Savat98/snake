@@ -7,6 +7,7 @@
 #include<QGraphicsScene>
 #include<iostream>
 #include<QVector>
+#include<QQueue>
 #include"snakebodyitem.h"
 #include"fruititem.h"
 #include<QTimer>
@@ -55,7 +56,8 @@ private:
 
 
     int gameSpeed = 8;
-    Dirrection direction = Dirrection::LEFT;
+    QQueue<Dirrection> direction;
+    Dirrection lastDirrection;
     int screenSize = 500;
     FruitItem *fruitItem;
     QVector<SnakeBodyItem*> bodyItems;

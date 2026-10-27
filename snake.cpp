@@ -13,6 +13,7 @@ Snake::Snake(int screenSize) : screenSize(screenSize){
 Snake::~Snake() {
     for(auto part : snake){
         delete part;
+
     }
 }
 

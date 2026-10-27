@@ -23,8 +23,6 @@ Widget::Widget(QWidget *parent)
     view->setScene(scene);
 
     timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Widget::move);
-    timer->start(1000/gameSpeed);
     initGame();
 
 
@@ -38,28 +36,38 @@ Widget::~Widget()
 
 void Widget::keyPressEvent(QKeyEvent *event)
 {
+
     switch(event->key()) {
         case Qt::Key_W : {
-            if(direction != Dirrection::DOWN)
-                direction = Dirrection::UP;
+        if(lastDirrection != Dirrection::DOWN){
+            direction.push_back(Dirrection::UP);
+
+        }
             break;
         }
         case Qt::Key_A : {
-            if(direction != Dirrection::RIGHT)
-                direction = Dirrection::LEFT;
+            if(lastDirrection != Dirrection::RIGHT){
+                direction.push_back(Dirrection::LEFT);
+
+            }
             break;
         }
         case Qt::Key_S : {
-            if(direction != Dirrection::UP)
-                direction = Dirrection::DOWN;
+            if(lastDirrection != Dirrection::UP){
+                direction.push_back(Dirrection::DOWN);
+
+            }
             break;
         }
         case Qt::Key_D : {
-            if(direction != Dirrection::LEFT)
-                direction = Dirrection::RIGHT;
+            if(lastDirrection != Dirrection::LEFT){
+                direction.push_back(Dirrection::RIGHT);
+
+            }
             break;
         }
     }
+        lastDirrection = direction.back();
 }
 
 void Widget::exit()
@@ -82,6 +90,7 @@ void Widget::clearMemory()
     qDeleteAll(bodyItems);
     bodyItems.clear();
     delete fruitItem;
+    fruitItem = nullptr;
 }
 
 bool Widget::fruitSpawnedOnSnake() const
@@ -104,6 +113,12 @@ bool Widget::hitWall() const
 
 void Widget::initGame()
 {
+    direction.clear();
+    direction.push_back(Dirrection::LEFT);
+    lastDirrection = direction.front();
+    connect(timer, &QTimer::timeout, this, &Widget::move);
+    timer->start(1000/gameSpeed);
+
     snake = new Snake(screenSize);
     fruit = new Fruit(screenSize);
     while(fruitSpawnedOnSnake())
@@ -124,6 +139,8 @@ void Widget::initGame()
 
 void Widget::gameOver()
 {
+    timer->stop();
+    disconnect(timer, &QTimer::timeout, this, &Widget::move);
     QMessageBox message(this);
     message.setText("Game Over");
     QPushButton *exitButton = new QPushButton("Exit");
@@ -139,6 +156,15 @@ void Widget::updateSnake()
 {
     if(snake->ateItself() || hitWall())
         gameOver();
+    // if(snake->ateItself()){
+    //     gameOver();
+    //     qDebug()<<"Pojela se";
+    // }
+    // else if(hitWall()){
+    //     gameOver();
+    //     qDebug()<<"Udarila u zid";
+    // }
+
     auto parts = snake->getSnake();
     int n = parts.size();
     for(int i = 0; i < n; i++){
@@ -148,8 +174,12 @@ void Widget::updateSnake()
 
 void Widget::move()
 {
+    direction.pop_front();
+    if(direction.length()==0)
+        direction.push_front(lastDirrection);
+
     QPoint prevTail = snake->getTail()->getCoordinates();
-    switch(direction){
+    switch(direction.front()){
         case Dirrection::UP : {
             snake->moveUp();
             break;
